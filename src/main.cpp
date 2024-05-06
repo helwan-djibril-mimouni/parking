@@ -1,8 +1,12 @@
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <iostream>
 #include <raylib.h>
 
 static void UpdateDrawFrame(int matrix[][22]);
+void SaveMatrixToFile(int matrix[][22]);
+void LoadMatrixFromFile(int matrix[][22]);
 
 void InitMatrix(int matrix[][22]){
     //0 = dead, 1 = red, 2 = blue
@@ -39,7 +43,8 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "raylib");
 
-    RandomMatrix(matrix);
+    // Load matrix from file
+    LoadMatrixFromFile(matrix);
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
@@ -50,8 +55,10 @@ int main()
     {
         UpdateDrawFrame(matrix);
     }
+    
+    SaveMatrixToFile(matrix);
 #endif
-
+    
     CloseWindow();
 
     return 0;
@@ -85,4 +92,45 @@ static void UpdateDrawFrame(int matrix[][22])
         DrawRectangle(675, 555, 100, 40, DARKGRAY);
 
     EndDrawing();
+}
+
+void SaveMatrixToFile(int matrix[][22])
+{
+    std::ofstream outFile("matrix.txt");
+
+    if (outFile.is_open())
+    {
+        for (int i = 0; i < 22; i++)
+        {
+            for (int j = 0; j < 32; j++)
+            {
+                outFile << matrix[i][j] << " ";
+            }
+            outFile << std::endl;
+        }
+        outFile.close();
+    }
+}
+
+void LoadMatrixFromFile(int matrix[][22])
+{
+    std::ifstream inFile("matrix.txt");
+
+    if (inFile.is_open())
+    {
+        for (int i = 0; i < 32; i++)
+        {
+            for (int j = 0; j < 22; j++)
+            {
+                inFile >> matrix[i][j];
+            }
+        }
+        inFile.close();
+        std::cout << "Matrix loaded from file 'matrix.txt'" << std::endl;
+    }
+    else
+    {
+        std::cerr << "Unable to open file for reading. Initializing matrix..." << std::endl;
+        InitMatrix(matrix); // If file doesn't exist, initialize matrix with default values
+    }
 }
