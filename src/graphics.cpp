@@ -1,26 +1,34 @@
-#include "board.cpp"
-#include <raylib.h>
+#include "graphics.hpp"
 
-void DrawGame(const Board& board) {
+// Initialisation de la fenêtre graphique
+void initGraphics(int screenWidth, int screenHeight, const char* title) {
+    InitWindow(screenWidth, screenHeight, title);
+    SetTargetFPS(60);
+}
+
+// Dessine le damier et les véhicules
+void drawBoard(const Board& board) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    // Dessiner le damier
-    DrawGrid(board.getRows(), board.getCols());
-
-    // Dessiner les véhicules
-    board.draw();
+    // Dessine chaque case du damier
+    for (int i = 0; i < board.numRows; ++i) {
+        for (int j = 0; j < board.numCols; ++j) {
+            Rectangle rec = { static_cast<float>(j * 100), static_cast<float>(i * 100), 100.0f, 100.0f };
+            if (board.grid[i][j] == 'C') {
+                DrawRectangleRec(rec, BLUE);
+            } else if (board.grid[i][j] == 'B') {
+                DrawRectangleRec(rec, DARKBLUE);
+            } else {
+                DrawRectangleRec(rec, LIGHTGRAY);
+            }
+        }
+    }
 
     EndDrawing();
 }
 
-void DrawGrid(int rows, int cols) {
-    // Dessiner les lignes horizontales
-    for (int i = 0; i <= rows; ++i) {
-        DrawLine(0, i * 100, cols * 100, i * 100, LIGHTGRAY);
-    }
-    // Dessiner les lignes verticales
-    for (int j = 0; j <= cols; ++j) {
-        DrawLine(j * 100, 0, j * 100, rows * 100, LIGHTGRAY);
-    }
+// Ferme la fenêtre graphique
+void closeGraphics() {
+    CloseWindow();
 }

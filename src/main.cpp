@@ -1,31 +1,30 @@
-#include <cstdlib>
-#include <ctime>
-#include <fstream>
-#include <iostream>
-#include <raylib.h>
-
-#include "vehicle.cpp"
-#include "board.cpp"
-#include "game.cpp"
-#include "graphics.cpp"
-#include <raylib.h>
+#include "board.hpp"
+#include "movement.hpp"
+#include "collision.hpp"
+#include "victory.hpp"
+#include "graphics.hpp"
 
 int main() {
-    // Initialisation du jeu
-    InitWindow(800, 600, "Parking Game");
-    SetTargetFPS(60);
+    Board board;
+    initializeBoard(board);
 
-    // Initialisation du damier et des véhicules
-    Board board(6, 6);
-    // Initialiser les véhicules sur le damier
-    InitializeVehicles(board);
+    while (!isVictory(board)) {
+        drawBoard(board);
 
-    while (!WindowShouldClose()) {
-        // Mettre à jour et afficher le jeu
-        UpdateGame(board);
-        DrawGame(board);
+        // Demander au joueur de déplacer un véhicule
+        moveVehicle(board);
+
+        // Vérifier s'il y a eu une collision
+        if (isCollision(board)) {
+            // Afficher un message d'erreur
+            displayCollisionMessage();
+            // Remettre le véhicule à sa position précédente
+            undoLastMove(board);
+        }
     }
 
-    CloseWindow();
+    // Affichage du message de victoire
+    displayVictoryMessage();
+
     return 0;
 }
