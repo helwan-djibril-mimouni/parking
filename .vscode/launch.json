@@ -61,7 +61,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "c:/Users/Moi/Documents/GitHub/CSDL/src",
-      "program": "c:/Users/Moi/Documents/GitHub/CSDL/src/build/Debug/outDebug"
+      "program": "c:/Users/Moi/Documents/GitHub/CSDL/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
